@@ -39,8 +39,8 @@ module bp_be_scheduler
 
    // Issue interface
    , output [issue_pkt_width_lp-1:0] issue_pkt_o
-   , output                          issue_pkt_v_o
    , input                           issue_pkt_ready_i
+   , output                          issue_pkt_v_o
    );
 
 wire unused = &{clk_i, reset_i};
@@ -128,7 +128,7 @@ assign issue_pkt_v_o   = fe_queue_yumi_o;
 
 // Queue control signals
 assign fe_queue_roll_o = cache_miss_v_i;
-assign fe_queue_deq_o  = ~cache_miss_v_i & cmt_v_i;
+assign fe_queue_deq_o  = cmt_v_i & ~cache_miss_v_i;
 
 endmodule
 

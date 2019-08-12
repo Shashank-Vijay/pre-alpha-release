@@ -166,7 +166,6 @@ bp_be_scheduler
 
    ,.fe_queue_deq_o(fe_queue_deq_o)
    ,.fe_queue_roll_o(fe_queue_roll_o)
-
    ,.fe_queue_i(fe_queue_i)
    ,.fe_queue_v_i(fe_queue_v_i)
    ,.fe_queue_yumi_o(fe_queue_yumi_o)
