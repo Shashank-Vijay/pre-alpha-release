@@ -18,7 +18,7 @@ package bp_common_cfg_link_pkg;
   //   16'h0060      = cce_mode
   //   16'h8000-8fff = cce ucode
 
-  localparam bp_cfg_base_addr_gp          = 'h0100_0000;
+  //localparam cfg_dev_base_addr_gp       = 32'h0020_0000;
   localparam bp_cfg_reg_reset_gp          = 'h0001;
   localparam bp_cfg_reg_freeze_gp         = 'h0002;
   localparam bp_cfg_reg_enter_debug_gp    = 'h0003;
