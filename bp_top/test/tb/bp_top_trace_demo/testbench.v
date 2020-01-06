@@ -28,11 +28,12 @@ module testbench
    , parameter dcache_trace_p              = 0
    , parameter vm_trace_p                  = 0
    , parameter preload_mem_p               = 0
+   , parameter restore_reg_p               = 0
    , parameter skip_init_p                 = 0
 
    , parameter mem_zero_p         = 1
    , parameter mem_file_p         = "prog.mem"
-   , parameter mem_cap_in_bytes_p = 2**20
+   , parameter mem_cap_in_bytes_p = 2**29
    , parameter [paddr_width_p-1:0] mem_offset_p = paddr_width_p'(32'h8000_0000)
 
    // Number of elements in the fake BlackParrot memory
@@ -423,9 +424,30 @@ bp_nonsynth_host
 
 logic nbf_done_lo;
 if (preload_mem_p == 0)
-  begin : preload
+  begin : nbf
     bp_nonsynth_nbf_loader
      #(.bp_params_p(bp_params_p))
+     nbf_loader
+      (.clk_i(clk_i)
+       ,.reset_i(reset_i)
+
+       ,.io_cmd_o(nbf_cmd_lo)
+       ,.io_cmd_v_o(nbf_cmd_v_lo)
+       ,.io_cmd_yumi_i(nbf_cmd_ready_li & nbf_cmd_v_lo)
+
+       ,.io_resp_i(nbf_resp_li)
+       ,.io_resp_v_i(nbf_resp_v_li)
+       ,.io_resp_ready_o(nbf_resp_ready_lo)
+
+       ,.done_o(nbf_done_lo)
+       );
+  end
+else if (restore_reg_p == 1)
+  begin : restore
+    bp_nonsynth_nbf_loader
+     #(.bp_params_p(bp_params_p)
+       ,.nbf_filename_p("prog.bp_regs")
+       )
      nbf_loader
       (.clk_i(clk_i)
        ,.reset_i(reset_i)
