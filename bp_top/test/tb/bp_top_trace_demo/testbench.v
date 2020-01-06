@@ -423,31 +423,10 @@ bp_nonsynth_host
    );
 
 logic nbf_done_lo, cfg_done_lo;
-if (preload_mem_p == 0)
+if (preload_mem_p == 0 || restore_reg_p == 1)
   begin : nbf
     bp_nonsynth_nbf_loader
      #(.bp_params_p(bp_params_p))
-     nbf_loader
-      (.clk_i(clk_i)
-       ,.reset_i(reset_i | ~cfg_done_lo)
-
-       ,.io_cmd_o(nbf_cmd_lo)
-       ,.io_cmd_v_o(nbf_cmd_v_lo)
-       ,.io_cmd_yumi_i(nbf_cmd_ready_li & nbf_cmd_v_lo)
-
-       ,.io_resp_i(nbf_resp_li)
-       ,.io_resp_v_i(nbf_resp_v_li)
-       ,.io_resp_ready_o(nbf_resp_ready_lo)
-
-       ,.done_o(nbf_done_lo)
-       );
-  end
-else if (restore_reg_p == 1)
-  begin : restore
-    bp_nonsynth_nbf_loader
-     #(.bp_params_p(bp_params_p)
-       ,.nbf_filename_p("prog.bp_regs")
-       )
      nbf_loader
       (.clk_i(clk_i)
        ,.reset_i(reset_i | ~cfg_done_lo)
