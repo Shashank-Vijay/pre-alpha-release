@@ -39,6 +39,8 @@ module bp_cce_mmio_cfg_loader
    , input [cce_io_msg_width_lp-1:0]                 io_resp_i
    , input                                           io_resp_v_i
    , output                                          io_resp_ready_o
+   
+   , output                                          done_o
    );
 
   wire unused0 = &{io_resp_i, io_resp_v_i};
@@ -156,6 +158,8 @@ module bp_cce_mmio_cfg_loader
   wire ucode_prog_done = (ucode_cnt_r == cfg_addr_width_p'(inst_ram_els_p-1));
   wire core_prog_done  = (core_cnt_r == cfg_addr_width_p'(num_core_p-1));
   wire irf_done = (irf_cnt_r == cfg_addr_width_p'(reg_els_lp-1));
+  
+  assign done_o = (state_r == DONE)? 1'b1 : 1'b0;
 
   always_ff @(posedge clk_i) 
     begin

@@ -33,7 +33,7 @@ module testbench
 
    , parameter mem_zero_p         = 1
    , parameter mem_file_p         = "prog.mem"
-   , parameter mem_cap_in_bytes_p = 2**29
+   , parameter mem_cap_in_bytes_p = 2**20
    , parameter [paddr_width_p-1:0] mem_offset_p = paddr_width_p'(32'h8000_0000)
 
    // Number of elements in the fake BlackParrot memory
@@ -422,14 +422,14 @@ bp_nonsynth_host
    ,.program_finish_o(program_finish)
    );
 
-logic nbf_done_lo;
+logic nbf_done_lo, cfg_done_lo;
 if (preload_mem_p == 0)
   begin : nbf
     bp_nonsynth_nbf_loader
      #(.bp_params_p(bp_params_p))
      nbf_loader
       (.clk_i(clk_i)
-       ,.reset_i(reset_i)
+       ,.reset_i(reset_i | ~cfg_done_lo)
 
        ,.io_cmd_o(nbf_cmd_lo)
        ,.io_cmd_v_o(nbf_cmd_v_lo)
@@ -450,7 +450,7 @@ else if (restore_reg_p == 1)
        )
      nbf_loader
       (.clk_i(clk_i)
-       ,.reset_i(reset_i)
+       ,.reset_i(reset_i | ~cfg_done_lo)
 
        ,.io_cmd_o(nbf_cmd_lo)
        ,.io_cmd_v_o(nbf_cmd_v_lo)
@@ -478,7 +478,7 @@ bp_cce_mmio_cfg_loader
     )
   cfg_loader
   (.clk_i(clk_i)
-   ,.reset_i(reset_i | ~nbf_done_lo)
+   ,.reset_i(reset_i)
    
    ,.io_cmd_o(cfg_cmd_lo)
    ,.io_cmd_v_o(cfg_cmd_v_lo)
@@ -487,11 +487,13 @@ bp_cce_mmio_cfg_loader
    ,.io_resp_i(cfg_resp_li)
    ,.io_resp_v_i(cfg_resp_v_li)
    ,.io_resp_ready_o(cfg_resp_ready_lo)
+   
+   ,.done_o(cfg_done_lo)
   );
 
 // CFG and NBF are mutex, so we can just use fixed arbitration here
 always_comb
-  if (nbf_done_lo)
+  if (~cfg_done_lo)
     begin
       load_cmd_lo = cfg_cmd_lo;
       load_cmd_v_lo = cfg_cmd_v_lo;
