@@ -302,7 +302,7 @@ module bp_cce_mmio_cfg_loader
           cfg_data_lo = '0;
         end
         SEND_PC: begin
-          state_n = core_prog_done ? BP_FREEZE_CLR : SEND_PC;
+          state_n = core_prog_done ? DONE : SEND_PC;
 
           core_cnt_inc = ~core_prog_done;
           core_cnt_clr = core_prog_done;
