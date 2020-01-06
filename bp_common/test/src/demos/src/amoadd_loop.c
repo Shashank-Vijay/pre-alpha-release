@@ -5,7 +5,8 @@
 #include <limits.h>
 
 uint64_t counter = 0;
-uint64_t* putchar_ptr = 0x00101000;
+uint64_t* putchar_ptr = (uint64_t*)0x00101000;
+uint64_t* finish_ptr  = (uint64_t*)0x00102000;
 
 #define static_assert(cond) switch(0) { case 0: case !!(long)(cond): ; }
 
@@ -227,5 +228,6 @@ int main(int argc, char** argv) {
     __asm__ volatile("amoadd.d %0, %2, (%1)": "=r"(atomic_result) : "r"(&counter), "r"(1):);
     printf("%d\n", atomic_result);
   }    
+  *(finish_ptr) = 0;
   return 0;
 }
