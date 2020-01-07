@@ -30,6 +30,7 @@ module testbench
    , parameter preload_mem_p               = 0
    , parameter restore_reg_p               = 0
    , parameter skip_init_p                 = 0
+   , parameter num_instr_p                 = 0
 
    , parameter mem_zero_p         = 1
    , parameter mem_file_p         = "prog.mem"
@@ -469,6 +470,18 @@ bp_cce_mmio_cfg_loader
    
    ,.done_o(cfg_done_lo)
   );
+
+logic [1000000-1:0] instr_cnt;
+always_ff @(posedge clk_i)
+  if (reset_i)
+    instr_cnt <= '0;
+  else if ((num_instr_p > 0) && (instr_cnt == num_instr_p))
+    begin
+      //$display("Stopping after %d instructions", instr_cnt);
+      $finish();
+    end
+  else
+    instr_cnt <= instr_cnt + test_bp.tb.wrapper.dut.cc.y[0].x[0].tile_node.tile.core.be.be_calculator.commit_pkt.instret;
 
 // CFG and NBF are mutex, so we can just use fixed arbitration here
 always_comb

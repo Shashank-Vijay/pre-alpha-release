@@ -206,10 +206,10 @@ riscvdv_dump: $(foreach x, $(BP_RVDV), $(x).dump)
 
 %.dromajo:
 	$(DROMAJO) $(MEM_DIR)/$*.riscv --maxinsn=$(MAXINSN) --save=$* --memory_size=1
-	riscv64-unknown-linux-gnu-objcopy --change-section-address .data=0x80000000 \
+	$(RISCV_OBJCOPY_BIN) --change-section-address .data=0x80000000 \
 		 -I binary -O elf64-littleriscv -B riscv $*.mainram $(MEM_DIR)/$@.riscv
-	$(RISCV_OBJCOPY) $(MEM_DIR)/$@.riscv $(MEM_DIR)/$@.mem
-	cp $*.bp_regs $(MEM_DIR)/$@.nbf
+	$(RISCV_OBJCOPY) $(MEM_DIR)/$@.riscv $(MEM_DIR)/$@.$(MAXINSN).mem
+	cp $*.bp_regs $(MEM_DIR)/$@.$(MAXINSN).nbf
 	rm $*.*
 
 clean:

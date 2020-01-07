@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <limits.h>
 
-#define N 8
+#define N 30
 
 int arr[N];
 uint64_t* putchar_ptr = (uint64_t*)0x00101000;
@@ -257,6 +257,7 @@ int main(int argc, char** argv) {
     arr[i] = N-i;
   }
   bubbleSort(arr, N);
+  if(i % 100 == 0)
   printArray(arr, N);
   *(finish_ptr) = 0;
   return 0;

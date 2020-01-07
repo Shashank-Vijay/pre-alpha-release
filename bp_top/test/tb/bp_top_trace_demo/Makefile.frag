@@ -7,6 +7,7 @@ NPC_TRACE_P    ?= 0
 VM_TRACE_P     ?= 0
 PRELOAD_MEM_P  ?= 0
 RESTORE_REG_P  ?= 0
+NUM_INSTR_P    ?= 0
 
 export DUT_PARAMS = 
 
@@ -18,7 +19,8 @@ export TB_PARAMS  = -pvalue+calc_trace_p=$(CALC_TRACE_P) \
                     -pvalue+npc_trace_p=$(NPC_TRACE_P) \
                     -pvalue+vm_trace_p=$(VM_TRACE_P) \
 					-pvalue+preload_mem_p=$(PRELOAD_MEM_P) \
-					-pvalue+restore_reg_p=$(RESTORE_REG_P)
+					-pvalue+restore_reg_p=$(RESTORE_REG_P) \
+					-pvalue+num_instr_p=$(NUM_INSTR_P)
 
 HDL_PARAMS  = $(DUT_PARAMS) $(TB_PARAMS)
 
