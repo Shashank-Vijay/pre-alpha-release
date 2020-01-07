@@ -1,4 +1,5 @@
 BP_DEMOS = \
+  bs                  \
   amoadd_loop         \
   uc_simple           \
   simple              \

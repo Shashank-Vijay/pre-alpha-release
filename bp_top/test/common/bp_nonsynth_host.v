@@ -129,8 +129,11 @@ always_ff @(negedge clk_i)
       begin
         if (hprint_w_v_li[i] & io_cmd_yumi_o)
           $display("[CORE%0x PRT] %x", i, io_cmd_cast_i.data[0+:8]);
-        if (cprint_w_v_li[i] & io_cmd_yumi_o)
-          $display("[CORE%0x PRT] %c", i, io_cmd_cast_i.data[0+:8]);
+        if (cprint_w_v_li[i] & io_cmd_yumi_o) begin
+          //$display("[CORE%0x PRT] %c", i, io_cmd_cast_i.data[0+:8]);
+          $write("%c", io_cmd_cast_i.data[0+:8]);
+          $fflush(32'h8000_0001);
+        end
         if (finish_w_v_li[i] & io_cmd_yumi_o & ~io_cmd_cast_i.data[0])
           $display("[CORE%0x FSH] PASS", i);
         if (finish_w_v_li[i] & io_cmd_yumi_o &  io_cmd_cast_i.data[0])

@@ -1,4 +1,5 @@
 BP_DEMOS_C = \
+  bs                    \
   amoadd_loop           \
   basic_demo            \
   atomic_queue_demo_2   \
