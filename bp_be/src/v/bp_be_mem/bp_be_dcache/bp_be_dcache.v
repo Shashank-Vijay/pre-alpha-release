@@ -1162,7 +1162,7 @@ module bp_be_dcache
 
   initial begin
     assert(dword_width_p == 64) else $error("dword_width_p has to be 64");
-    assert(lce_assoc_p == 8) else $error("lce_assoc_p has to be 8");
+    assert(lce_assoc_p == 8 | lce_assoc_p == 4 | lce_assoc_p == 2) else $error("lce_assoc_p has to be 8, 4 or 2");
   end
   // synopsys translate_on
 

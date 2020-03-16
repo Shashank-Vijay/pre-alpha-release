@@ -39,9 +39,9 @@ module testbench
    , parameter [paddr_width_p-1:0] mem_offset_p = paddr_width_p'(32'h8000_0000)
 
    // Number of elements in the fake BlackParrot memory
-   , parameter use_max_latency_p      = 1
+   , parameter use_max_latency_p      = 0
    , parameter use_random_latency_p   = 0
-   , parameter use_dramsim2_latency_p = 0
+   , parameter use_dramsim2_latency_p = 1
 
    , parameter max_latency_p = 15
 
