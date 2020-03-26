@@ -182,8 +182,8 @@ typedef struct packed
   , localparam num_l2e_p   = mc_x_dim_p * mc_y_dim_p                                               \
   , localparam num_acc_p   = ac_x_dim_p * ac_y_dim_p                                               \
                                                                                                    \
-  , localparam num_cce_p   = (proc_param_lp == bp_half_core_cfg_p) ? 1 : num_core_p + num_l2e_p    \
-  , localparam num_lce_p   = (proc_param_lp == bp_half_core_cfg_p) ? 1 : 2*num_core_p + num_acc_p  \
+  , localparam num_cce_p   = (bp_params_e_mp == e_bp_half_core_cfg) ? 1 : num_core_p + num_l2e_p   \
+  , localparam num_lce_p   = (bp_params_e_mp == e_bp_half_core_cfg) ? 1 : 2*num_core_p + num_acc_p \
                                                                                                    \
   , localparam core_id_width_p = `BSG_SAFE_CLOG2(cc_x_dim_p*cc_y_dim_p)                            \
   , localparam cce_id_width_p  = `BSG_SAFE_CLOG2((cc_x_dim_p*1+2)*(cc_y_dim_p*1+2))                \
