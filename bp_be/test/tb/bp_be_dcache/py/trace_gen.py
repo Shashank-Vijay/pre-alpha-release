@@ -2,6 +2,8 @@
 #   trace_gen.py
 #
 
+import numpy as np
+
 class TraceGen:
 
   # constructor
@@ -79,7 +81,8 @@ class TraceGen:
   # data: expected data
   def recv_data(self, data):
     packet = "0010_"
-    packet += "0"*(self.ptag_width_p) + "_" + "0"*(self.opcode_width_p) + "_" + "0"*(self.page_offset_width_p) + "_" + format(data, "064b") + "\n"
+    bin_data = np.binary_repr(data, 64)
+    packet += "0"*(self.ptag_width_p) + "_" + "0"*(self.opcode_width_p) + "_" + "0"*(self.page_offset_width_p) + "_" + bin_data + "\n"
     return packet
 
   # wait for a number of cycles

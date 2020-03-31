@@ -46,7 +46,7 @@ module testbench
    , localparam ptag_width_lp = (paddr_width_p - page_offset_width_lp)
    , localparam dcache_pkt_width_lp = `bp_be_dcache_pkt_width(page_offset_width_p, dword_width_p)
    , localparam trace_replay_data_width_lp = ptag_width_lp + dcache_pkt_width_lp
-   , localparam trace_rom_addr_width_lp = 6 
+   , localparam trace_rom_addr_width_lp = 8 
    )
   (input clk_i
    , input reset_i
