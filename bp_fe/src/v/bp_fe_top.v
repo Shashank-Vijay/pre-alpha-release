@@ -14,7 +14,7 @@ module bp_fe_top
    `declare_bp_proc_params(bp_params_p)
    `declare_bp_fe_be_if_widths(vaddr_width_p, paddr_width_p, asid_width_p, branch_metadata_fwd_width_p)
    `declare_bp_lce_cce_if_widths(cce_id_width_p, lce_id_width_p, paddr_width_p, lce_assoc_p, dword_width_p, cce_block_width_p)
-   `declare_bp_cache_service_if_widths(paddr_width_p, ptag_width_p, lce_sets_p, icache_assoc_p, dword_width_p, cce_block_width_p, icache)
+   `declare_bp_cache_service_if_widths(paddr_width_p, ptag_width_p, icache_sets_p, icache_assoc_p, dword_width_p, icache_block_width_p, icache)
    
    , localparam way_id_width_lp=`BSG_SAFE_CLOG2(icache_assoc_p)
    , localparam block_size_in_words_lp=icache_assoc_p
@@ -23,7 +23,7 @@ module bp_fe_top
    , localparam data_mem_mask_width_lp=(cache_block_width_lp>>3)
    , localparam byte_offset_width_lp=`BSG_SAFE_CLOG2(cache_block_width_lp>>3)
    , localparam word_offset_width_lp=`BSG_SAFE_CLOG2(block_size_in_words_lp)
-   , localparam index_width_lp=`BSG_SAFE_CLOG2(lce_sets_p)
+   , localparam index_width_lp=`BSG_SAFE_CLOG2(icache_sets_p)
    , localparam block_offset_width_lp=(word_offset_width_lp+byte_offset_width_lp)
    , localparam ptag_width_lp=(paddr_width_p-bp_page_offset_width_gp)
    
@@ -57,7 +57,7 @@ module bp_fe_top
    , input [icache_data_mem_pkt_width_lp-1:0]         data_mem_pkt_i
    , input                                            data_mem_pkt_v_i
    , output logic                                     data_mem_pkt_ready_o
-   , output logic [cce_block_width_p-1:0]             data_mem_o
+   , output logic [icache_block_width_p-1:0]          data_mem_o
 
    , input [icache_tag_mem_pkt_width_lp-1:0]          tag_mem_pkt_i
    , input                                            tag_mem_pkt_v_i
@@ -71,7 +71,7 @@ module bp_fe_top
    );
 
 `declare_bp_fe_be_if(vaddr_width_p, paddr_width_p, asid_width_p, branch_metadata_fwd_width_p);
-`declare_bp_fe_mem_structs(vaddr_width_p, lce_sets_p, cce_block_width_p, vtag_width_p, ptag_width_p)
+`declare_bp_fe_mem_structs(vaddr_width_p, icache_sets_p, icache_block_width_p, vtag_width_p, ptag_width_p)
    
 bp_fe_mem_cmd_s  mem_cmd_lo;
 logic            mem_cmd_v_lo, mem_cmd_yumi_li;
