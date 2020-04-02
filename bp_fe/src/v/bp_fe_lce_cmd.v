@@ -248,7 +248,7 @@ module bp_fe_lce_cmd
           else if (lce_cmd_li.header.msg_type == e_lce_cmd_uc_data) begin
             if(data_mem_pkt_ready_i) begin
               data_mem_pkt.index = miss_addr_i[block_offset_width_lp+:index_width_lp];
-              data_mem_pkt.way_id = lce_cmd_li.header.way_id;
+              data_mem_pkt.way_id = lce_cmd_li.header.way_id[0+:way_id_width_lp];
               data_mem_pkt.data = lce_cmd_li.data;
               data_mem_pkt.opcode = e_cache_data_mem_uncached;
               data_mem_pkt_v = lce_cmd_v_i;
@@ -266,14 +266,14 @@ module bp_fe_lce_cmd
           if (lce_cmd_li.header.msg_type == e_lce_cmd_transfer) begin
             if(data_mem_pkt_ready_i) begin
               data_mem_pkt.index  = lce_cmd_addr_index;
-              data_mem_pkt.way_id = lce_cmd_li.header.way_id;
+              data_mem_pkt.way_id = lce_cmd_li.header.way_id[0+:way_id_width_lp];
               data_mem_pkt.opcode = e_cache_data_mem_read;
               data_mem_pkt_v    = lce_cmd_v_i;
             end
 
             if(tag_mem_pkt_ready_i) begin
               tag_mem_pkt.index = lce_cmd_addr_index;
-              tag_mem_pkt.way_id = lce_cmd_li.header.way_id;
+              tag_mem_pkt.way_id = lce_cmd_li.header.way_id[0+:way_id_width_lp];
               tag_mem_pkt.opcode = e_cache_tag_mem_read;
               tag_mem_pkt_v = lce_cmd_v_i;
             end
@@ -292,7 +292,7 @@ module bp_fe_lce_cmd
           end else if (lce_cmd_li.header.msg_type == e_lce_cmd_set_tag) begin
             if(tag_mem_pkt_ready_i) begin
               tag_mem_pkt.index  = lce_cmd_addr_index;
-              tag_mem_pkt.way_id = lce_cmd_li.header.way_id;
+              tag_mem_pkt.way_id = lce_cmd_li.header.way_id[0+:way_id_width_lp];
               tag_mem_pkt.state  = lce_cmd_li.header.state;
               tag_mem_pkt.tag    = lce_cmd_addr_tag;
               tag_mem_pkt.opcode = e_cache_tag_mem_set_tag;
@@ -306,7 +306,7 @@ module bp_fe_lce_cmd
           end else if (lce_cmd_li.header.msg_type == e_lce_cmd_set_tag_wakeup) begin
             if(tag_mem_pkt_ready_i) begin
               tag_mem_pkt.index  = lce_cmd_addr_index;
-              tag_mem_pkt.way_id = lce_cmd_li.header.way_id;
+              tag_mem_pkt.way_id = lce_cmd_li.header.way_id[0+:way_id_width_lp];
               tag_mem_pkt.state  = lce_cmd_li.header.state;
               tag_mem_pkt.tag    = lce_cmd_addr_tag;
               tag_mem_pkt.opcode = e_cache_tag_mem_set_tag;
@@ -320,7 +320,7 @@ module bp_fe_lce_cmd
           end else if (lce_cmd_li.header.msg_type == e_lce_cmd_invalidate_tag) begin
             if(tag_mem_pkt_ready_i) begin
               tag_mem_pkt.index = lce_cmd_addr_index;
-              tag_mem_pkt.way_id = lce_cmd_li.header.way_id;
+              tag_mem_pkt.way_id = lce_cmd_li.header.way_id[0+:way_id_width_lp];
               tag_mem_pkt.state = e_COH_I;
               tag_mem_pkt.opcode = e_cache_tag_mem_invalidate;
               tag_mem_pkt_v = flag_invalidate_r
@@ -344,7 +344,7 @@ module bp_fe_lce_cmd
           end else if (lce_cmd_li.header.msg_type == e_lce_cmd_data) begin
             if(data_mem_pkt_ready_i) begin
               data_mem_pkt.index = miss_addr_i[block_offset_width_lp+:index_width_lp];
-              data_mem_pkt.way_id = lce_cmd_li.header.way_id;
+              data_mem_pkt.way_id = lce_cmd_li.header.way_id[0+:way_id_width_lp];
               data_mem_pkt.data = lce_cmd_li.data;
               data_mem_pkt.opcode = e_cache_data_mem_write;
               data_mem_pkt_v = lce_cmd_v_i;
@@ -352,7 +352,7 @@ module bp_fe_lce_cmd
             
             if(tag_mem_pkt_ready_i) begin
               tag_mem_pkt.index  = miss_addr_i[block_offset_width_lp+:index_width_lp];
-              tag_mem_pkt.way_id = lce_cmd_li.header.way_id;
+              tag_mem_pkt.way_id = lce_cmd_li.header.way_id[0+:way_id_width_lp];
               tag_mem_pkt.state  = lce_cmd_li.header.state;
               tag_mem_pkt.tag    = lce_cmd_li.header.addr[block_offset_width_lp+index_width_lp+:ptag_width_lp];
               tag_mem_pkt.opcode = e_cache_tag_mem_set_tag;
@@ -368,7 +368,7 @@ module bp_fe_lce_cmd
           end else if (lce_cmd_li.header.msg_type == e_lce_cmd_uc_data) begin
             if(data_mem_pkt_ready_i) begin
               data_mem_pkt.index = miss_addr_i[block_offset_width_lp+:index_width_lp];
-              data_mem_pkt.way_id = lce_cmd_li.header.way_id;
+              data_mem_pkt.way_id = lce_cmd_li.header.way_id[0+:way_id_width_lp];
               data_mem_pkt.data = lce_cmd_li.data;
               data_mem_pkt.opcode = e_cache_data_mem_uncached;
               data_mem_pkt_v = lce_cmd_v_i;

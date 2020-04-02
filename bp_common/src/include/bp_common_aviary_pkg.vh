@@ -160,9 +160,9 @@ package bp_common_aviary_pkg;
       ,dtlb_els             : 8
 
       ,dcache_sets          : 64
-      ,dcache_assoc         : 8
+      ,dcache_assoc         : 2
       ,icache_sets          : 64
-      ,icache_assoc         : 8
+      ,icache_assoc         : 4
       ,acache_sets          : 64
       ,acache_assoc         : 8
 
@@ -286,9 +286,9 @@ package bp_common_aviary_pkg;
       ,dtlb_els             : 8
 
       ,dcache_sets          : 64
-      ,dcache_assoc         : 8
+      ,dcache_assoc         : 4
       ,icache_sets          : 64
-      ,icache_assoc         : 8
+      ,icache_assoc         : 2
       ,acache_sets          : 64
       ,acache_assoc         : 8
 
@@ -349,9 +349,9 @@ package bp_common_aviary_pkg;
       ,dtlb_els             : 8
 
       ,dcache_sets          : 64
-      ,dcache_assoc         : 8
+      ,dcache_assoc         : 2
       ,icache_sets          : 64
-      ,icache_assoc         : 8
+      ,icache_assoc         : 4
       ,acache_sets          : 64
       ,acache_assoc         : 8
 
@@ -475,9 +475,9 @@ package bp_common_aviary_pkg;
       ,dtlb_els             : 8
 
       ,dcache_sets          : 64
-      ,dcache_assoc         : 8
+      ,dcache_assoc         : 4
       ,icache_sets          : 64
-      ,icache_assoc         : 8
+      ,icache_assoc         : 2
       ,acache_sets          : 64
       ,acache_assoc         : 8
 
@@ -601,9 +601,9 @@ package bp_common_aviary_pkg;
       ,dtlb_els             : 8
 
       ,dcache_sets          : 64
-      ,dcache_assoc         : 8
+      ,dcache_assoc         : 2
       ,icache_sets          : 64
-      ,icache_assoc         : 8
+      ,icache_assoc         : 4
       ,acache_sets          : 64
       ,acache_assoc         : 8
 
@@ -727,9 +727,9 @@ package bp_common_aviary_pkg;
       ,dtlb_els             : 8
 
       ,dcache_sets          : 64
-      ,dcache_assoc         : 8
+      ,dcache_assoc         : 4
       ,icache_sets          : 64
-      ,icache_assoc         : 8
+      ,icache_assoc         : 2
       ,acache_sets          : 64
       ,acache_assoc         : 8
       ,cce_block_width      : 512

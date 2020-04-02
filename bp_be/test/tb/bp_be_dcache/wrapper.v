@@ -9,6 +9,7 @@ module wrapper
  import bp_common_aviary_pkg::*;
  import bp_be_pkg::*;
  import bp_common_rv64_pkg::*;
+ import bp_me_pkg::*;
  import bp_cce_pkg::*;
  import bp_be_dcache_pkg::*;
  #(parameter bp_params_e bp_params_p = BP_CFG_FLOWVAR
@@ -53,6 +54,8 @@ module wrapper
 
    , input [ptag_width_lp-1:0]                         ptag_i
 
+   , input                                             uncached_i
+
    , input                                             mem_resp_v_i
    , input [cce_mem_msg_width_lp-1:0]                  mem_resp_i
    , output logic                                      mem_resp_ready_o
@@ -63,6 +66,7 @@ module wrapper
    );
 
    `declare_bp_be_dcache_pkt_s(page_offset_width_p, dword_width_p);
+   // `declare_bp_me_if(paddr_width_p, cce_block_width_p, lce_id_width_p, lce_assoc_p)
 
    // Cache to Rolly FIFO signals
    logic dcache_miss_lo, dcache_ready_lo;
@@ -90,10 +94,11 @@ module wrapper
    logic [stat_info_width_lp-1:0] stat_mem_lo;
 
    // LCE - CCE Interface
-   logic lce_req_v_lo, lce_cmd_v_lo, lce_resp_v_lo;
-   logic lce_req_ready_lo, lce_cmd_yumi_lo, lce_resp_ready_lo;  
+   logic lce_req_v_lo, lce_resp_v_lo;
+   logic lce_req_ready_lo, lce_resp_ready_lo;
+   logic fifo_lce_cmd_v_lo, fifo_lce_cmd_yumi_li, lce_cmd_v_lo, lce_cmd_ready_li;  
    logic [lce_cce_req_width_lp-1:0] lce_req_lo;
-   logic [lce_cmd_width_lp-1:0] lce_cmd_lo;
+   logic [lce_cmd_width_lp-1:0] lce_cmd_lo, fifo_lce_cmd_lo;
    logic [lce_cce_resp_width_lp-1:0] lce_resp_lo;
 
    // Credits
@@ -153,7 +158,7 @@ module wrapper
 
    ,.tlb_miss_i(1'b0)
    ,.ptag_i(rolly_ptag_r)
-   ,.uncached_i(1'b0)
+   ,.uncached_i(uncached_i)
 
    ,.poison_i(1'b0)
 
@@ -224,9 +229,9 @@ module wrapper
    ,.lce_resp_v_o(lce_resp_v_lo)
    ,.lce_resp_ready_i(lce_resp_ready_lo)
    
-   ,.lce_cmd_i(lce_cmd_lo)
-   ,.lce_cmd_v_i(lce_cmd_v_lo)
-   ,.lce_cmd_yumi_o(lce_cmd_yumi_lo)
+   ,.lce_cmd_i(fifo_lce_cmd_lo)
+   ,.lce_cmd_v_i(fifo_lce_cmd_v_lo)
+   ,.lce_cmd_yumi_o(fifo_lce_cmd_yumi_li)
 
    ,.lce_cmd_o()
    ,.lce_cmd_v_o()
@@ -234,6 +239,24 @@ module wrapper
 
    ,.credits_full_o(credits_full_lo)
    ,.credits_empty_o(credits_empty_lo)
+   );
+
+   // We need this to break the deadlock for the lce_cmd
+   bsg_one_fifo 
+     #(.width_p(lce_cmd_width_lp))
+     cmd_fifo 
+     (.clk_i(clk_i)
+     ,.reset_i(reset_i)
+
+     // from CCE
+     ,.v_i(lce_cmd_v_lo)
+     ,.ready_o(lce_cmd_ready_li)
+     ,.data_i(lce_cmd_lo)
+
+     // to LCE
+     ,.v_o(fifo_lce_cmd_v_lo)
+     ,.yumi_i(fifo_lce_cmd_yumi_li)
+     ,.data_o(fifo_lce_cmd_lo)
    );
 
    bp_cce_fsm_top
@@ -255,7 +278,7 @@ module wrapper
 
    ,.lce_cmd_o(lce_cmd_lo)
    ,.lce_cmd_v_o(lce_cmd_v_lo)
-   ,.lce_cmd_ready_i(lce_cmd_yumi_lo)
+   ,.lce_cmd_ready_i(lce_cmd_ready_li)
 
    ,.mem_resp_i(mem_resp_i)
    ,.mem_resp_v_i(mem_resp_v_i)
