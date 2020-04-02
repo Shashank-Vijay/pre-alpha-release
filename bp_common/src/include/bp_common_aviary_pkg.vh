@@ -36,11 +36,14 @@ package bp_common_aviary_pkg;
 
       ,dcache_sets          : 64
       ,dcache_assoc         : 8
+      ,dcache_block_width   : 512
       ,icache_sets          : 64
       ,icache_assoc         : 8
+      ,icache_block_width   : 512
       ,acache_sets          : 64
       ,acache_assoc         : 8
-      ,cce_block_width      : 512
+      ,acache_block_width   : 512
+      
       ,cce_pc_width         : 8
       ,ucode_cce            : 0
 
@@ -160,13 +163,15 @@ package bp_common_aviary_pkg;
       ,dtlb_els             : 8
 
       ,dcache_sets          : 64
-      ,dcache_assoc         : 2
+      ,dcache_assoc         : 8
+      ,dcache_block_width   : 512
       ,icache_sets          : 64
-      ,icache_assoc         : 4
+      ,icache_assoc         : 8
+      ,icache_block_width   : 512
       ,acache_sets          : 64
       ,acache_assoc         : 8
+      ,acache_block_width   : 512
 
-      ,cce_block_width      : 512
       ,cce_pc_width         : 8
       ,ucode_cce            : 0
 
@@ -286,13 +291,15 @@ package bp_common_aviary_pkg;
       ,dtlb_els             : 8
 
       ,dcache_sets          : 64
-      ,dcache_assoc         : 4
+      ,dcache_assoc         : 8
+      ,dcache_block_width   : 512
       ,icache_sets          : 64
-      ,icache_assoc         : 2
+      ,icache_assoc         : 8
+      ,icache_block_width   : 512
       ,acache_sets          : 64
       ,acache_assoc         : 8
-
-      ,cce_block_width      : 512
+      ,acache_block_width   : 512
+      
       ,cce_pc_width         : 8
       ,ucode_cce            : 0
 
@@ -349,13 +356,14 @@ package bp_common_aviary_pkg;
       ,dtlb_els             : 8
 
       ,dcache_sets          : 64
-      ,dcache_assoc         : 2
+      ,dcache_assoc         : 8
+      ,dcache_block_width   : 512
       ,icache_sets          : 64
-      ,icache_assoc         : 4
+      ,icache_assoc         : 8
+      ,dcache_block_width   : 512
       ,acache_sets          : 64
       ,acache_assoc         : 8
 
-      ,cce_block_width      : 512
       ,cce_pc_width         : 8
       ,ucode_cce            : 0
 
@@ -413,12 +421,14 @@ package bp_common_aviary_pkg;
 
       ,dcache_sets          : 64
       ,dcache_assoc         : 8
+      ,dcache_block_width   : 512
       ,icache_sets          : 64
       ,icache_assoc         : 8
+      ,icache_block_width   : 512
       ,acache_sets          : 64
       ,acache_assoc         : 8
+      ,acache_block_width   : 512
 
-      ,cce_block_width      : 512
       ,cce_pc_width         : 8
       ,ucode_cce            : 0
 
@@ -476,12 +486,14 @@ package bp_common_aviary_pkg;
 
       ,dcache_sets          : 64
       ,dcache_assoc         : 4
+      ,dcache_block_width   : 512
       ,icache_sets          : 64
       ,icache_assoc         : 2
+      ,icache_block_width   : 512
       ,acache_sets          : 64
       ,acache_assoc         : 8
+      ,acache_block_width   : 512
 
-      ,cce_block_width      : 512
       ,cce_pc_width         : 8
       ,ucode_cce            : 0
 
@@ -539,12 +551,14 @@ package bp_common_aviary_pkg;
 
       ,dcache_sets          : 64
       ,dcache_assoc         : 8
+      ,dcache_block_width   : 512
       ,icache_sets          : 64
       ,icache_assoc         : 8
+      ,icache_block_width   : 512
       ,acache_sets          : 64
       ,acache_assoc         : 8
+      ,acache_block_width   : 512
 
-      ,cce_block_width      : 512
       ,cce_pc_width         : 8
       ,ucode_cce            : 0
 
@@ -601,13 +615,15 @@ package bp_common_aviary_pkg;
       ,dtlb_els             : 8
 
       ,dcache_sets          : 64
-      ,dcache_assoc         : 2
+      ,dcache_assoc         : 8
+      ,dcache_block_width   : 512
       ,icache_sets          : 64
-      ,icache_assoc         : 4
+      ,icache_assoc         : 8
+      ,icache_block_width   : 512
       ,acache_sets          : 64
       ,acache_assoc         : 8
+      ,acache_block_width   : 512
 
-      ,cce_block_width      : 512
       ,cce_pc_width         : 8
       ,ucode_cce            : 0
 
@@ -665,12 +681,14 @@ package bp_common_aviary_pkg;
 
       ,dcache_sets          : 64
       ,dcache_assoc         : 8
+      ,dcache_block_width   : 512
       ,icache_sets          : 64
       ,icache_assoc         : 8
+      ,icache_block_width   : 512
       ,acache_sets          : 64
       ,acache_assoc         : 8
+      ,acache_block_width   : 512
 
-      ,cce_block_width      : 512
       ,cce_pc_width         : 8
       ,ucode_cce            : 0
 
@@ -728,11 +746,14 @@ package bp_common_aviary_pkg;
 
       ,dcache_sets          : 64
       ,dcache_assoc         : 4
+      ,dcache_block_width   : 512
       ,icache_sets          : 64
       ,icache_assoc         : 2
+      ,icache_block_width   : 512
       ,acache_sets          : 64
       ,acache_assoc         : 8
-      ,cce_block_width      : 512
+      ,acache_block_width   : 512
+
       ,cce_pc_width         : 8
       ,ucode_cce            : 0
 
