@@ -382,20 +382,15 @@ module bp_fe_icache
   );
 
   logic [dword_width_p-1:0] ld_data_dword_picked;
-  if (num_dwords_per_bank_lp == 1) begin
-    assign ld_data_dword_picked = ld_data_way_picked;
-  end
-  else begin
-    bsg_mux
-      #(.width_p(dword_width_p)
-       ,.els_p(num_dwords_per_bank_lp)
-       )
-       dword_select_mux
-       (.data_i(ld_data_way_picked)
-       ,.sel_i(addr_tv_r[3+:(3-`BSG_SAFE_CLOG2(icache_assoc_p))])
-       ,.data_o(ld_data_dword_picked)
-       );
-  end
+  bsg_mux
+    #(.width_p(dword_width_p)
+     ,.els_p(num_dwords_per_bank_lp)
+     )
+     dword_select_mux
+     (.data_i(ld_data_way_picked)
+     ,.sel_i(addr_tv_r[3+:`BSG_CDIV(num_dwords_per_bank_lp, 2)])
+     ,.data_o(ld_data_dword_picked)
+     );
 
   logic [dword_width_p-1:0] final_data;
   bsg_mux #(
