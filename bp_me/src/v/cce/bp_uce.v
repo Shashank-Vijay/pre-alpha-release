@@ -14,9 +14,9 @@ module bp_uce
 
     , localparam stat_info_width_lp = `bp_be_dcache_stat_info_width(assoc_p)
 
-    , localparam cache_block_multiplier_lp = 2**(3-`BSG_SAFE_CLOG2(assoc_p))
-    , localparam cache_block_width_lp = dword_width_p * cache_block_multiplier_lp
-    , localparam byte_offset_width_lp  = `BSG_SAFE_CLOG2(cache_block_width_lp>>3)
+    , localparam bank_width_lp = block_width_p / assoc_p
+    , localparam num_dwords_per_bank_lp = bank_width_lp / dword_width_p
+    , localparam byte_offset_width_lp  = `BSG_SAFE_CLOG2(bank_width_lp>>3)
     // Words per line == associativity
     , localparam word_offset_width_lp  = `BSG_SAFE_CLOG2(assoc_p)
     , localparam block_offset_width_lp = (word_offset_width_lp + byte_offset_width_lp)
