@@ -818,20 +818,15 @@ module bp_be_dcache
     ,.data_o(ld_data_way_picked)
   );
 
-  if(num_dwords_per_bank_lp == 1) begin
-    assign ld_data_dword_picked = ld_data_way_picked;
-  end
-  else begin  
-    bsg_mux
-      #(.width_p(dword_width_p)
-      ,.els_p(num_dwords_per_bank_lp)
-      )
-      dword_mux
-      (.data_i(ld_data_way_picked)
-      ,.sel_i(paddr_tv_r[3+:(3-`BSG_SAFE_CLOG2(dcache_assoc_p))])
-      ,.data_o(ld_data_dword_picked)
-      );
-  end
+  bsg_mux
+    #(.width_p(dword_width_p)
+    ,.els_p(num_dwords_per_bank_lp)
+    )
+    dword_mux
+    (.data_i(ld_data_way_picked)
+    ,.sel_i(paddr_tv_r[3+:`BSG_CDIV(num_dwords_per_bank_lp, 2)])
+    ,.data_o(ld_data_dword_picked)
+    );
 
   bsg_mux_segmented #(
     .segments_p(bypass_data_mask_width_lp)
