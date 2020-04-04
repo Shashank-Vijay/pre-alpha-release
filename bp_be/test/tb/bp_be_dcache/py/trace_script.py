@@ -3,26 +3,14 @@
 import sys, getopt
 from trace_gen import TraceGen
 
-def main(argv):
-  filename = ""
-  try:
-    opts, args = getopt.getopt(argv, "hi:", ["trace_file="])
-  except getopt.GetoptError:
-    print("trace_script.py -i <input_trace_file_name>")
-    sys.exit(2)
-
-  for opt, arg in opts:
-    if opt == "-h":
-      print("trace_script.pt -i <input_trace_file_name>")
-      sys.exit()
-    elif opt in ("-i", "--trace_file"):
-      filename = arg
+def main():
   
   tracer = TraceGen(28, 12, 4, 64)
-  file = open(filename, "w")
+  
+  # Store/Load double word test
+  file = open("test_sd_ld.tr", "w")
 
   file.write(tracer.print_header())
-  
   file.write(tracer.print_comment("Store to address - 0, 8, 16, 24, 32, 40, 48, 56"))
   for i in range(8, 72, 8):
     file.write(tracer.send_store(8, i-8, 0, False, i))
@@ -36,7 +24,14 @@ def main(argv):
     file.write(tracer.recv_data(i))
 
   file.write(tracer.print_comment("Store/Load double word test done\n"))
+  file.write(tracer.test_finish())
 
+  file.close()
+
+  # Store/Load byte test (signed and unsigned)
+  file = open("test_sb_lb.tr", "w")
+
+  file.write(tracer.print_header())
   file.write(tracer.print_comment("Store byte to address 64"))
   file.write(tracer.send_store(1, 64, 0, False, 170))
   file.write(tracer.nop())
@@ -45,14 +40,21 @@ def main(argv):
   file.write(tracer.send_load(True, 1, 64, 0, False))
   file.write(tracer.nop())
   file.write(tracer.recv_data(-86))
-
+ 
   file.write(tracer.print_comment("Load unsigned byte from address 64"))
   file.write(tracer.send_load(False, 1, 64, 0, False))
   file.write(tracer.nop())
   file.write(tracer.recv_data(170))
 
   file.write(tracer.print_comment("Store/Load unsigned/signed byte test done\n"))
+  file.write(tracer.test_finish())
 
+  file.close()
+
+  # Store/Load halfword test (signed and unsigned)
+  file = open("test_sh_lh.tr", "w")
+
+  file.write(tracer.print_header())
   file.write(tracer.print_comment("Store halfword to address 128"))
   file.write(tracer.send_store(2, 128, 0, False, 43690))
   file.write(tracer.nop())
@@ -68,6 +70,12 @@ def main(argv):
   file.write(tracer.recv_data(43690))
 
   file.write(tracer.print_comment("Store/Load unsigned/signed halfword test done\n"))
+  file.write(tracer.test_finish())
+
+  file.close()
+
+  # Store/Load word test (signed and unsigned)
+  file = open("test_sw_lw.tr", "w")
 
   file.write(tracer.print_comment("Store word to address 192"))
   file.write(tracer.send_store(4, 192, 0, False, 2863311530))
@@ -84,7 +92,14 @@ def main(argv):
   file.write(tracer.recv_data(2863311530))
 
   file.write(tracer.print_comment("Store/Load unsigned/signed word test done\n"))
+  file.write(tracer.test_finish())
 
+  file.close()
+
+  # Store to same index with 9 different ptags (to verify writeback)
+  file = open("test_wb.tr", "w")
+
+  file.write(tracer.print_header())
   file.write(tracer.print_comment("Store to address - 256, 4352, 8448, 12544, 16640, 20736, 24832, 28928"))
   for i in range(8, 72, 8):
     temp_ptag = ((i-1) >> 3)
@@ -118,6 +133,12 @@ def main(argv):
   file.write(tracer.recv_data(72))
 
   file.write(tracer.print_comment("Writeback, Eviction and Replacement successfully tested"))
+  file.write(tracer.test_finish())
+
+  file.close()
+
+  # Uncached Store/Load
+  file = open("test_uncached.tr", "w")
 
   file.write(tracer.print_comment("Store to address 320 in uncached mode"))
   file.write(tracer.send_store(8, 320, 0, True, 320))
@@ -131,4 +152,4 @@ def main(argv):
   file.close()
 
 if __name__ == "__main__":
-  main(sys.argv[1:])
+  main()
