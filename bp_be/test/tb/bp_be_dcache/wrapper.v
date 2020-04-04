@@ -35,7 +35,6 @@ module wrapper
    , localparam ptag_width_lp=(paddr_width_p-bp_page_offset_width_gp)
    , localparam way_id_width_lp=`BSG_SAFE_CLOG2(dcache_assoc_p)
 
-   , localparam lce_data_width_lp=(lce_assoc_p*dword_width_p)
    , localparam dcache_pkt_width_lp=`bp_be_dcache_pkt_width(page_offset_width_p,dword_width_p)
    , localparam tag_info_width_lp=`bp_be_dcache_tag_info_width(ptag_width_lp)
    , localparam stat_info_width_lp=`bp_be_dcache_stat_info_width(dcache_assoc_p)
@@ -72,6 +71,7 @@ module wrapper
    logic dcache_miss_lo, dcache_ready_lo;
    logic rollback_li;
    logic [ptag_width_lp-1:0] rolly_ptag_lo;
+   logic rolly_uncached_lo;
    bp_be_dcache_pkt_s rolly_dcache_pkt_lo;
    logic rolly_v_lo, rolly_yumi_li;
 
@@ -105,7 +105,7 @@ module wrapper
    logic credits_full_lo, credits_empty_lo;
   
    bsg_fifo_1r1w_rolly
-   #(.width_p(dcache_pkt_width_lp+ptag_width_lp)
+   #(.width_p(dcache_pkt_width_lp+ptag_width_lp+1)
     ,.els_p(8))
     rolly 
     (.clk_i(clk_i)
@@ -115,11 +115,11 @@ module wrapper
     ,.clr_v_i(1'b0)
     ,.deq_v_i(v_o)
     
-    ,.data_i({ptag_i, dcache_pkt_i})
+    ,.data_i({uncached_i, ptag_i, dcache_pkt_i})
     ,.v_i(v_i)
     ,.ready_o(ready_o)
     
-    ,.data_o({rolly_ptag_lo, rolly_dcache_pkt_lo})
+    ,.data_o({rolly_uncached_lo, rolly_ptag_lo, rolly_dcache_pkt_lo})
     ,.v_o(rolly_v_lo)
     ,.yumi_i(rolly_yumi_li)
     );
@@ -139,7 +139,33 @@ module wrapper
     ,.data_i(rolly_ptag_lo)
     ,.data_o(rolly_ptag_r)
     );
-     
+
+   logic dcache_v_rr, poison_li;
+   bsg_dff_chain
+    #(.width_p(1)
+     ,.num_stages_p(2)
+    )
+    dcache_v_reg
+    (.clk_i(clk_i)
+    ,.data_i(rolly_yumi_li)
+    ,.data_o(dcache_v_rr)
+    );
+
+   assign poison_li = dcache_v_rr & ~v_o;
+   
+   logic uncached_r;
+   bsg_dff_reset
+   #(.width_p(1)
+    ,.reset_val_p(0)
+   )
+   uncached_reg
+   (.clk_i(clk_i)
+   ,.reset_i(reset_i)
+
+   ,.data_i(rolly_uncached_lo)
+   ,.data_o(uncached_r)
+   );
+  
    bp_be_dcache
    #(.bp_params_p(bp_params_p))
    dcache
@@ -158,9 +184,9 @@ module wrapper
 
    ,.tlb_miss_i(1'b0)
    ,.ptag_i(rolly_ptag_r)
-   ,.uncached_i(uncached_i)
+   ,.uncached_i(uncached_r)
 
-   ,.poison_i(1'b0)
+   ,.poison_i(poison_li)
 
    ,.load_op_tl_o()
    ,.store_op_tl_o()
@@ -241,8 +267,8 @@ module wrapper
    ,.credits_empty_o(credits_empty_lo)
    );
 
-   // We need this to break the deadlock for the lce_cmd
-   bsg_one_fifo 
+   // lce_cmd demanding -> demanding handshake conversion
+   bsg_two_fifo 
      #(.width_p(lce_cmd_width_lp))
      cmd_fifo 
      (.clk_i(clk_i)

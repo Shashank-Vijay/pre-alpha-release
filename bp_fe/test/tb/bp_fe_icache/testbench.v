@@ -5,8 +5,8 @@ module testbench
   import bp_fe_pkg::*;
   import bp_be_dcache_pkg::*;
   import bp_fe_icache_pkg::*;
-  import bp_cce_pkg::*;
   import bp_me_pkg::*;
+  import bp_cce_pkg::*;
   #(parameter bp_params_e bp_params_p = BP_CFG_FLOWVAR
    `declare_bp_proc_params(bp_params_p)
 
@@ -35,8 +35,8 @@ module testbench
    , parameter dram_capacity_p           = 16384
 
   // I-Cache Widths
-  `declare_bp_fe_tag_widths(icache_assoc_p, lce_sets_p, lce_id_width_p, cce_id_width_p, dword_width_p, paddr_width_p)
-  `declare_bp_cache_service_if_widths(paddr_width_p, ptag_width_p, lce_sets_p, icache_assoc_p, dword_width_p, cce_block_width_p, icache)
+  `declare_bp_fe_tag_widths(icache_assoc_p, icache_sets_p, lce_id_width_p, cce_id_width_p, dword_width_p, paddr_width_p)
+  `declare_bp_cache_service_if_widths(paddr_width_p, ptag_width_p, icache_sets_p, icache_assoc_p, dword_width_p, icache_block_width_p, icache)
   
   // LCE-CCE Interface Widths
   `declare_bp_lce_cce_if_widths(cce_id_width_p, lce_id_width_p, paddr_width_p, lce_assoc_p, dword_width_p, cce_block_width_p)
@@ -47,7 +47,7 @@ module testbench
   , localparam cfg_bus_width_lp = `bp_cfg_bus_width(vaddr_width_p, core_id_width_p, cce_id_width_p, lce_id_width_p, cce_pc_width_p, cce_instr_width_p)
   , localparam page_offset_width_lp = bp_page_offset_width_gp
   , localparam ptag_width_lp = (paddr_width_p - page_offset_width_lp)
-  , localparam trace_replay_data_width_lp = ptag_width_lp + vaddr_width_p
+  , localparam trace_replay_data_width_lp = ptag_width_lp + vaddr_width_p + 1
   , localparam trace_rom_addr_width_lp = 7
   )
   ( input clk_i
@@ -80,6 +80,7 @@ module testbench
 
   logic [vaddr_width_p-1:0] vaddr_li;
   logic [ptag_width_lp-1:0] ptag_li;
+  logic uncached_li;
 
   logic switch_cce_mode;
   always_comb begin
@@ -92,7 +93,7 @@ module testbench
   end
  
   logic [6:0] count_lo;
-  localparam counter_max_val_lp = lce_sets_p + 1;
+  localparam counter_max_val_lp = icache_sets_p + 1;
 
   bsg_counter_clear_up
     #(.max_val_p(counter_max_val_lp)
@@ -112,6 +113,7 @@ module testbench
 
   assign ptag_li = trace_data_lo[0+:(ptag_width_lp)];
   assign vaddr_li = trace_data_lo[ptag_width_lp+:vaddr_width_p];
+  assign uncached_li = trace_data_lo[(ptag_width_lp+vaddr_width_p)+:1];
   assign trace_yumi_li = trace_v_lo & dut_ready_lo;
 
   logic [15:0] count_sim;
@@ -170,7 +172,7 @@ module testbench
   assign fifo_yumi_li = trace_v_li & trace_ready_lo;
   assign trace_data_li = {'0, fifo_data_lo};
 
-  bsg_one_fifo 
+  bsg_two_fifo 
     #(.width_p(instr_width_p))
     output_fifo 
     (.clk_i(clk_i)
@@ -202,6 +204,8 @@ module testbench
      
      ,.ptag_i(ptag_li)
      ,.ptag_v_i(trace_v_lo)
+
+     ,.uncached_i(uncached_li)
 
      ,.data_o(icache_data_lo)
      ,.data_v_o(icache_data_v_lo)
@@ -289,7 +293,7 @@ module testbench
 
   // CCE tracer
   bind bp_cce_fsm
-    bp_cce_nonsynth_tracer
+    bp_me_nonsynth_cce_tracer
       #(.bp_params_p(bp_params_p))
       bp_cce_tracer
        (.clk_i(clk_i & (testbench.cce_trace_p == 1))
