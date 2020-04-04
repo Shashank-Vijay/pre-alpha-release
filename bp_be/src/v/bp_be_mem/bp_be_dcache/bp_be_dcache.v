@@ -927,23 +927,11 @@ module bp_be_dcache
   logic [dcache_assoc_p-1:0][bank_width_lp-1:0] lce_data_mem_write_data;
 
   logic [data_mem_mask_width_lp-1:0] wbuf_mask;
-  if (num_dwords_per_bank_lp == 1) begin
+  if (num_dwords_per_bank_lp == 1) begin : passthrough_wbuf_mask
     assign wbuf_mask = wbuf_entry_out.mask;
   end
-  else if (num_dwords_per_bank_lp == 2) begin
-    assign wbuf_mask = (wbuf_entry_out.paddr[3] == 1'b0) ? {8'b0, wbuf_entry_out.mask} : {wbuf_entry_out.mask, 8'b0};
-  end
-  else if (num_dwords_per_bank_lp == 4) begin
-   assign wbuf_mask =  (wbuf_entry_out.paddr[4:3] == 2'b00)
-      ? {24'b0, wbuf_entry_out.mask}
-      : (wbuf_entry_out.paddr[4:3] == 2'b01)
-      ? {16'b0, wbuf_entry_out.mask, 8'b0}
-      : (wbuf_entry_out.paddr[4:3] == 2'b10)
-      ? {8'b0, wbuf_entry_out.mask, 16'b0}
-      : {wbuf_entry_out.mask, 24'b0};
-  end
-  else begin
-    assign wbuf_mask = '0;
+  else begin : shift_wbuf_mask
+    assign wbuf_mask = wbuf_entry_out.mask << (wbuf_entry_out.paddr[3+:`BSG_SAFE_CLOG2(num_dwords_per_bank_lp)] << 3);
   end
 
   for (genvar i = 0; i < dcache_assoc_p; i++) begin
