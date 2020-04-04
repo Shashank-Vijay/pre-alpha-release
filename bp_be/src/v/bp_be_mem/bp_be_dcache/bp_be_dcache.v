@@ -99,8 +99,6 @@ module bp_be_dcache
     , localparam ptag_width_lp=(paddr_width_p-bp_page_offset_width_gp)
     , localparam way_id_width_lp=`BSG_SAFE_CLOG2(dcache_assoc_p)
   
-    , localparam lce_data_width_lp=(lce_assoc_p*dword_width_p)
-
     , localparam dcache_pkt_width_lp=`bp_be_dcache_pkt_width(bp_page_offset_width_gp,dword_width_p)
     , localparam tag_info_width_lp=`bp_be_dcache_tag_info_width(ptag_width_lp)
     , localparam stat_info_width_lp=`bp_be_dcache_stat_info_width(dcache_assoc_p)

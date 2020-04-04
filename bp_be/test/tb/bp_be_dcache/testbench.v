@@ -109,19 +109,6 @@ module testbench
 
   assign switch_cce_mode = (count_lo == counter_max_val_lp);
 
-  logic [15:0] done_counter;
-  always_ff @(posedge clk_i) begin
-    if(reset_i)
-      done_counter <= 16'b0;
-    else
-      done_counter <= done_counter + 1'b1;
-  end
-
-  always_comb begin
-    if(done_counter == 16'd65535) 
-      $finish;
-  end
-
   // Trace Replay
   bsg_trace_replay
     #(.payload_width_p(trace_replay_data_width_lp)
@@ -158,7 +145,7 @@ module testbench
       
   assign dcache_pkt_li = trace_data_lo[0+:dcache_pkt_width_lp];
   assign ptag_li = trace_data_lo[dcache_pkt_width_lp+:ptag_width_lp];
-  assign uncached_li = trace_data_lo[dcache_pkt_width_lp+ptag_width_lp+:1];
+  assign uncached_li = trace_data_lo[(dcache_pkt_width_lp+ptag_width_lp)+:1];
 
   // Output FIFO
   logic fifo_yumi_li;
@@ -166,7 +153,7 @@ module testbench
   assign fifo_yumi_li = trace_v_li & trace_ready_lo;
   assign trace_data_li = {'0, fifo_data_lo};
 
-  bsg_one_fifo 
+  bsg_two_fifo 
     #(.width_p(dword_width_p))
     output_fifo 
     (.clk_i(clk_i)
@@ -202,7 +189,7 @@ module testbench
     ,.ptag_i(ptag_li)
 
     ,.uncached_i(uncached_li)
-   
+ 
     ,.mem_resp_v_i(mem_resp_v_lo)
     ,.mem_resp_i(mem_resp_lo)
     ,.mem_resp_ready_o(mem_resp_ready_lo)
