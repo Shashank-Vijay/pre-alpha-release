@@ -233,8 +233,12 @@ module testbench
 
   // Tracers
   bind bp_be_dcache
-    bp_be_nonsynth_dcache_tracer
-     #(.bp_params_p(bp_params_p))
+    bp_nonsynth_cache_tracer
+     #(.bp_params_p(bp_params_p)
+      ,.sets_p(dcache_sets_p)
+      ,.assoc_p(dcache_assoc_p)
+      ,.block_width_p(dcache_block_width_p)
+      ,.trace_file_p("dcache"))
      dcache_tracer
       (.clk_i(clk_i & (testbench.dcache_trace_p == 1))
        ,.reset_i(reset_i)
@@ -245,7 +249,7 @@ module testbench
        ,.v_tl_r(v_tl_r)
 
        ,.v_tv_r(v_tv_r)
-       ,.paddr_tv_r(paddr_tv_r)
+       ,.addr_tv_r(paddr_tv_r)
        ,.lr_miss_tv(lr_miss_tv)
        ,.sc_op_tv_r(sc_op_tv_r)
        ,.sc_success(sc_success)
@@ -259,7 +263,7 @@ module testbench
        ,.v_o(v_o)
        ,.load_data(data_o)
        ,.store_data(data_tv_r)
-       ,.dcache_miss_o(dcache_miss_o)
+       ,.cache_miss_o(dcache_miss_o)
 
        ,.data_mem_pkt_v_i(data_mem_pkt_v_i)
        ,.data_mem_pkt_i(data_mem_pkt_i)
