@@ -64,7 +64,7 @@ module bp_be_dcache_lce
     , localparam way_id_width_lp = `BSG_SAFE_CLOG2(dcache_assoc_p)
 
     , localparam stat_info_width_lp=
-      `bp_be_dcache_stat_info_width(dcache_assoc_p)
+      `bp_cache_stat_info_width(dcache_assoc_p)
   )
   (
     input clk_i

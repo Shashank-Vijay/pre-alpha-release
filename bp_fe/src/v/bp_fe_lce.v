@@ -35,7 +35,7 @@ module bp_fe_lce
    , localparam block_offset_width_lp=(word_offset_width_lp+byte_offset_width_lp)
    , localparam ptag_width_lp=(paddr_width_p-bp_page_offset_width_gp)
    
-   , localparam stat_width_lp = `bp_be_dcache_stat_info_width(icache_assoc_p)
+   , localparam stat_width_lp = `bp_cache_stat_info_width(icache_assoc_p)
 
    , localparam cfg_bus_width_lp = `bp_cfg_bus_width(vaddr_width_p, core_id_width_p, cce_id_width_p, lce_id_width_p, cce_pc_width_p, cce_instr_width_p)
   )

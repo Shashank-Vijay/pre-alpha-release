@@ -35,7 +35,7 @@ module bp_be_dcache_lce_cmd
     `declare_bp_cache_service_if_widths(paddr_width_p, ptag_width_p, dcache_sets_p, dcache_assoc_p, dword_width_p, dcache_block_width_p, dcache)
 
     , localparam stat_info_width_lp=
-      `bp_be_dcache_stat_info_width(dcache_assoc_p)
+      `bp_cache_stat_info_width(dcache_assoc_p)
 
     // width for counter used during initiliazation and for sync messages
     , localparam cnt_width_lp = `BSG_MAX(cce_id_width_p+1, `BSG_SAFE_CLOG2(dcache_sets_p)+1)
@@ -92,7 +92,7 @@ module bp_be_dcache_lce_cmd
   );
 
   // casting structs
- `declare_bp_be_dcache_stat_info_s(dcache_assoc_p);
+ `declare_bp_cache_stat_info_s(dcache_assoc_p, dcache);
   `declare_bp_lce_cce_if(cce_id_width_p, lce_id_width_p, paddr_width_p, lce_assoc_p, dword_width_p, cce_block_width_p)
   `declare_bp_cache_service_if(paddr_width_p, ptag_width_p, dcache_sets_p, dcache_assoc_p, dword_width_p, dcache_block_width_p, dcache);
   
@@ -108,7 +108,7 @@ module bp_be_dcache_lce_cmd
   bp_dcache_tag_mem_pkt_s tag_mem_pkt;
   bp_dcache_stat_mem_pkt_s stat_mem_pkt;
 
-  bp_be_dcache_stat_info_s stat_mem_cast_i;
+  bp_dcache_stat_info_s stat_mem_cast_i;
 
   assign data_mem_pkt_o = data_mem_pkt;
   assign tag_mem_pkt_o = tag_mem_pkt;
