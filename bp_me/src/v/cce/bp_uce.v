@@ -12,7 +12,7 @@ module bp_uce
     `declare_bp_proc_params(bp_params_p)
     `declare_bp_me_if_widths(paddr_width_p, cce_block_width_p, lce_id_width_p, lce_assoc_p)
 
-    , localparam stat_info_width_lp = `bp_be_dcache_stat_info_width(assoc_p)
+    , localparam stat_info_width_lp = `bp_cache_stat_info_width(assoc_p)
 
     , localparam bank_width_lp = block_width_p / assoc_p
     , localparam num_dwords_per_bank_lp = bank_width_lp / dword_width_p
@@ -70,7 +70,7 @@ module bp_uce
 
   `declare_bp_me_if(paddr_width_p, cce_block_width_p, lce_id_width_p, lce_assoc_p);
   `declare_bp_cache_service_if(paddr_width_p, ptag_width_p, sets_p, assoc_p, dword_width_p, block_width_p, cache);
-  `declare_bp_be_dcache_stat_info_s(assoc_p);
+  `declare_bp_cache_stat_info_s(assoc_p, cache);
 
   `bp_cast_i(bp_cache_req_s, cache_req);
   `bp_cast_o(bp_cache_tag_mem_pkt_s, tag_mem_pkt);
@@ -145,9 +145,9 @@ module bp_uce
     ,.data_o(dirty_tag_r)
     );
 
-  bp_be_dcache_stat_info_s dirty_stat_r;
+  bp_cache_stat_info_s dirty_stat_r;
   bsg_dff_en_bypass
-   #(.width_p($bits(bp_be_dcache_stat_info_s)))
+   #(.width_p($bits(bp_cache_stat_info_s)))
    dirty_stat_reg
     (.clk_i(clk_i)
 
