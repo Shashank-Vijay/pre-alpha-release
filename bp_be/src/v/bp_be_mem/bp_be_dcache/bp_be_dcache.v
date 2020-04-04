@@ -101,7 +101,7 @@ module bp_be_dcache
   
     , localparam dcache_pkt_width_lp=`bp_be_dcache_pkt_width(bp_page_offset_width_gp,dword_width_p)
     , localparam tag_info_width_lp=`bp_be_dcache_tag_info_width(ptag_width_lp)
-    , localparam stat_info_width_lp=`bp_be_dcache_stat_info_width(dcache_assoc_p)
+    , localparam stat_info_width_lp=`bp_cache_stat_info_width(dcache_assoc_p)
   )
   (
     input clk_i
@@ -601,14 +601,14 @@ module bp_be_dcache
   // stat_mem {lru, dirty}
   // It has (ways_p-1) bits to form pseudo-LRU tree, and ways_p bits for dirty
   // bit for each block in set.
-  `declare_bp_be_dcache_stat_info_s(dcache_assoc_p);
+  `declare_bp_cache_stat_info_s(dcache_assoc_p, dcache);
 
   logic stat_mem_v_li;
   logic stat_mem_w_li;
   logic [index_width_lp-1:0] stat_mem_addr_li;
-  bp_be_dcache_stat_info_s stat_mem_data_li;
-  bp_be_dcache_stat_info_s stat_mem_mask_li;
-  bp_be_dcache_stat_info_s stat_mem_data_lo;
+  bp_dcache_stat_info_s stat_mem_data_li;
+  bp_dcache_stat_info_s stat_mem_mask_li;
+  bp_dcache_stat_info_s stat_mem_data_lo;
 
   bsg_mem_1rw_sync_mask_write_bit
     #(.width_p(stat_info_width_lp)

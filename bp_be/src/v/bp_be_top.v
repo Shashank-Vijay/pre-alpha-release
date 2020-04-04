@@ -24,7 +24,7 @@ module bp_be_top
    
    // VM parameters
    , localparam tlb_entry_width_lp = `bp_pte_entry_leaf_width(paddr_width_p)
-   , localparam stat_info_width_lp = `bp_be_dcache_stat_info_width(dcache_assoc_p)
+   , localparam stat_info_width_lp = `bp_cache_stat_info_width(dcache_assoc_p)
   )
   (input                                     clk_i
    , input                                   reset_i

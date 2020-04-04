@@ -32,7 +32,7 @@ module bp_fe_lce_cmd
    , localparam block_offset_width_lp=(word_offset_width_lp+byte_offset_width_lp)
    , localparam ptag_width_lp=(paddr_width_p-bp_page_offset_width_gp)
    
-   , localparam stat_width_lp = `bp_be_dcache_stat_info_width(icache_assoc_p)
+   , localparam stat_width_lp = `bp_cache_stat_info_width(icache_assoc_p)
 
     // width for counter used during initiliazation and for sync messages
     , localparam cnt_width_lp = `BSG_MAX(cce_id_width_p+1, `BSG_SAFE_CLOG2(icache_sets_p)+1)
