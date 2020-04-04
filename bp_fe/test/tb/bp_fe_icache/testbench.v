@@ -253,41 +253,49 @@ module testbench
 
   // I$ tracer
   bind bp_fe_icache
-    bp_fe_nonsynth_icache_tracer
-    #(.bp_params_p(bp_params_p))
+    bp_nonsynth_cache_tracer
+    #(.bp_params_p(bp_params_p)
+     ,.assoc_p(icache_assoc_p)
+     ,.sets_p(icache_sets_p)
+     ,.block_width_p(icache_block_width_p)
+     ,.trace_file_p("icache"))
     icache_tracer
       (.clk_i(clk_i)
       ,.reset_i(reset_i)
+      
       ,.freeze_i(cfg_bus_cast_i.freeze)
+      ,.mhartid_i(cfg_bus_cast_i.core_id)
 
-      ,.data_o(data_o)
-      ,.data_v_o(data_v_o)
-      ,.miss_o(miss_o)
-
+      
       ,.v_tl_r(v_tl_r)
-      ,.v_tv_r(v_tv_r)
 
-      ,.cache_req_ready_i(cache_req_ready_i)
+      ,.v_tv_r(v_tv_r)
+      ,.addr_tv_r(addr_tv_r)
+      ,.lr_miss_tv(1'b0)
+      ,.sc_op_tv_r(1'b0)
+      ,.sc_success(1'b0)
+
       ,.cache_req_o(cache_req_o)
       ,.cache_req_v_o(cache_req_v_o)
       ,.cache_req_metadata_o(cache_req_metadata_o)
       ,.cache_req_metadata_v_o(cache_req_metadata_v_o)
-
       ,.cache_req_complete_i(cache_req_complete_i)
+      
+      ,.v_o(data_v_o)
+      ,.load_data(dword_width_p'(data_o))
+      ,.store_data(dword_width_p'(0))
+      ,.cache_miss_o(miss_o)
 
       ,.data_mem_pkt_v_i(data_mem_pkt_v_i)
       ,.data_mem_pkt_i(data_mem_pkt_i)
-      ,.data_mem_o(data_mem_o)
       ,.data_mem_pkt_ready_o(data_mem_pkt_ready_o)
 
       ,.tag_mem_pkt_v_i(tag_mem_pkt_v_i)
       ,.tag_mem_pkt_i(tag_mem_pkt_i)
-      ,.tag_mem_o(tag_mem_o)
       ,.tag_mem_pkt_ready_o(tag_mem_pkt_ready_o)
 
       ,.stat_mem_pkt_v_i(stat_mem_pkt_v_i)
       ,.stat_mem_pkt_i(stat_mem_pkt_i)
-      ,.stat_mem_o(stat_mem_o)
       ,.stat_mem_pkt_ready_o(stat_mem_pkt_ready_o)
       );
 
