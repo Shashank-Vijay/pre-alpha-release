@@ -928,11 +928,14 @@ module bp_be_dcache
   logic [dcache_assoc_p-1:0][bank_width_lp-1:0] lce_data_mem_write_data;
 
   logic [data_mem_mask_width_lp-1:0] wbuf_mask;
+  logic [byte_offset_width_lp-1:0] mask_shift;
   if (num_dwords_per_bank_lp == 1) begin : passthrough_wbuf_mask
+    assign mask_shift = '0;
     assign wbuf_mask = wbuf_entry_out.mask;
   end
   else begin : shift_wbuf_mask
-    assign wbuf_mask = wbuf_entry_out.mask << (wbuf_entry_out.paddr[3+:`BSG_SAFE_CLOG2(num_dwords_per_bank_lp)] << 3);
+    assign mask_shift = wbuf_entry_out.paddr[3+:`BSG_SAFE_CLOG2(num_dwords_per_bank_lp)] << 3;
+    assign wbuf_mask = wbuf_entry_out.mask << mask_shift;
   end
 
   for (genvar i = 0; i < dcache_assoc_p; i++) begin
