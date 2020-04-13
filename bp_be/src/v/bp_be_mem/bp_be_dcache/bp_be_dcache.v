@@ -672,7 +672,7 @@ module bp_be_dcache
     cache_req_cast_o = '0;
 
     // Assigning sizes to cache miss packet
-    if (uncached_tv_r)
+    if (uncached_tv_r | (wbuf_v_li & (writethrough_p == 1)))
       unique case (size_op_tv_r)
         e_dword: cache_req_cast_o.size = e_size_8B;
         e_word: cache_req_cast_o.size = e_size_4B;
@@ -689,6 +689,10 @@ module bp_be_dcache
     end
     else if(store_miss_tv | lr_miss_tv) begin
       cache_req_cast_o.msg_type = e_miss_store;
+      cache_req_v_o = cache_req_ready_i;
+    end
+    else if(wbuf_v_li & (writethrough_p == 1)) begin
+      cache_req_cast_o.msg_type = e_wt_store;
       cache_req_v_o = cache_req_ready_i;
     end
     else if(uncached_load_req) begin
@@ -726,7 +730,7 @@ module bp_be_dcache
   // output stage
   // Cache Miss Tracking logic
   logic cache_miss_r;
-  wire miss_tracker_en_li = cache_req_v_o & ~uncached_store_req & ~fencei_req;
+  wire miss_tracker_en_li = cache_req_v_o & ~uncached_store_req & ~fencei_req & ~wbuf_v_li;
   bsg_dff_reset_en
    #(.width_p(1))
    cache_miss_tracker

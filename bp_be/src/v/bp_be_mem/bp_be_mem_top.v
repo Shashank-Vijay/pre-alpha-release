@@ -371,7 +371,7 @@ bp_be_ptw
 logic load_op_tl_lo, store_op_tl_lo;
 bp_be_dcache
   #(.bp_params_p(bp_params_p)
-    ,.writethrough_p(0))
+    ,.writethrough_p(1))
   dcache
    (.clk_i(clk_i)
     ,.reset_i(reset_i)
