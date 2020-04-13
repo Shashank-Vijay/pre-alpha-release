@@ -264,10 +264,6 @@ module testbench
       
       ,.freeze_i(cfg_bus_cast_i.freeze)
       ,.mhartid_i(cfg_bus_cast_i.core_id)
-<<<<<<< HEAD
-
-=======
->>>>>>> 64b8b3bd3c45b15ed73cb04adbf1df53a09fb550
       
       ,.v_tl_r(v_tl_r)
 
