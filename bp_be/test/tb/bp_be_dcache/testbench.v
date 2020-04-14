@@ -342,8 +342,11 @@ module testbench
      ,.mem_resp_v_i(mem_resp_v_lo)
      ,.mem_resp_yumi_i(mem_resp_yumi_lo)
      );
-
+  
+  // Assertions
   if(uce_p == 0 && writethrough_p == 1)
-    $error("Writethrough cache with CCE not yet supported.");
+    $error("Writethrough cache with CCE not yet supported");
+  if(cce_block_width_p != dcache_block_width_p)
+    $error("Memory fetch block width does not match D$ block width");
 
 endmodule

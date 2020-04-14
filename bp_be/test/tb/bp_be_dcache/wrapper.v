@@ -91,7 +91,7 @@ module wrapper
    logic [dcache_data_mem_pkt_width_lp-1:0] data_mem_pkt_lo;
    logic [dcache_tag_mem_pkt_width_lp-1:0] tag_mem_pkt_lo;
    logic [dcache_stat_mem_pkt_width_lp-1:0] stat_mem_pkt_lo;
-   logic [cce_block_width_p-1:0] data_mem_lo;
+   logic [dcache_block_width_p-1:0] data_mem_lo;
    logic [ptag_width_lp-1:0] tag_mem_lo;
    logic [stat_info_width_lp-1:0] stat_mem_lo;
 
