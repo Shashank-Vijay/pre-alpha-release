@@ -318,4 +318,7 @@ module testbench
      ,.mem_resp_yumi_i(mem_resp_yumi_li)
      );
 
+  if(cce_block_width_p != icache_block_width_p)
+    $error("Memory fetch block width does not match icache block width");
+
 endmodule

@@ -9,7 +9,6 @@ def main():
   file = open("test_load.tr", "w")
 
   file.write(tracer.print_header())
-  file.write(tracer.wait(65))
   
   file.write(tracer.print_comment("Load from address - 0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60"))
   for i in range(0, 64, 4):
@@ -24,7 +23,6 @@ def main():
   file = open("test_uncached_load.tr", "w")
   
   file.write(tracer.print_header())
-  file.write(tracer.wait(65))
   
   file.write(tracer.print_comment("Uncached Load from address 36"))
   temp_vaddr = (1 << 31) | 36
@@ -37,3 +35,4 @@ def main():
 
 if __name__ == "__main__":
   main()
+  

@@ -71,7 +71,7 @@ module wrapper
   logic [icache_data_mem_pkt_width_lp-1:0] data_mem_pkt_li;
   logic [icache_tag_mem_pkt_width_lp-1:0] tag_mem_pkt_li;
   logic [icache_stat_mem_pkt_width_lp-1:0] stat_mem_pkt_li;
-  logic [cce_block_width_p-1:0] data_mem_lo;
+  logic [icache_block_width_p-1:0] data_mem_lo;
   logic [ptag_width_lp-1:0] tag_mem_lo;
   logic [stat_width_lp-1:0] stat_mem_lo;
   
@@ -321,11 +321,11 @@ module wrapper
 
     bp_uce
       #(.bp_params_p(bp_params_p)
-       ,.assoc_p(dcache_assoc_p)
-       ,.sets_p(dcache_sets_p)
-       ,.block_width_p(dcache_block_width_p)
+       ,.assoc_p(icache_assoc_p)
+       ,.sets_p(icache_sets_p)
+       ,.block_width_p(icache_block_width_p)
        )
-      dcache_uce
+      icache_uce
       (.clk_i(clk_i)
       ,.reset_i(reset_i)
 
