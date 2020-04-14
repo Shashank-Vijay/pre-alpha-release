@@ -206,13 +206,14 @@ module wrapper
     ,.stat_mem_pkt_ready_o(stat_mem_pkt_ready_lo)
     );
 
-  if (uce_p == 0) begin
-    logic lce_req_v_lo, lce_resp_v_lo, lce_cmd_v_lo, fifo_lce_cmd_v_lo, fifo_lce_req_v_lo, fifo_lce_resp_v_lo;
-    logic lce_req_ready_li, lce_resp_ready_li, lce_cmd_ready_li, fifo_lce_cmd_yumi_li, fifo_lce_req_yumi_li, fifo_lce_resp_yumi_li;
-    logic [lce_cce_req_width_lp-1:0] lce_req_lo, fifo_lce_req_lo;
-    logic [lce_cce_resp_width_lp-1:0] lce_resp_lo, fifo_lce_resp_lo;
+  if (uce_p == 0) begin : CCE
+    logic lce_req_v_lo, lce_resp_v_lo, lce_cmd_v_lo, fifo_lce_cmd_v_lo;
+    logic lce_req_ready_li, lce_resp_ready_li, lce_cmd_ready_li, fifo_lce_cmd_yumi_li;
+    logic [lce_cce_req_width_lp-1:0] lce_req_lo;
+    logic [lce_cce_resp_width_lp-1:0] lce_resp_lo;
     logic [lce_cmd_width_lp-1:0] lce_cmd_lo, fifo_lce_cmd_lo;
-    
+    logic mem_resp_ready_lo;    
+
     // I-Cache LCE
     bp_fe_lce
       #(.bp_params_p(bp_params_p))
@@ -280,38 +281,8 @@ module wrapper
       ,.data_o(fifo_lce_cmd_lo)
       );
 
-    // lce req demanding -> demanding handshake conversion
-    bsg_two_fifo
-      #(.width_p(lce_cce_req_width_lp))
-      req_fifo
-      (.clk_i(clk_i)
-      ,.reset_i(reset_i)
-      ,.v_i(lce_req_v_lo)
-      ,.data_i(lce_req_lo)
-      ,.ready_o(lce_req_ready_li)
-      ,.v_o(fifo_lce_req_v_lo)
-      ,.data_o(fifo_lce_req_lo)
-      ,.yumi_i(fifo_lce_req_yumi_li)
-      );
-
-    // lce resp demanding -> demanding handshake conversion
-    bsg_fifo_1r1w_small
-      #(.width_p(lce_cce_resp_width_lp)
-       ,.els_p(wg_per_cce_lp)
-      )
-      resp_fifo
-      (.clk_i(clk_i)
-      ,.reset_i(reset_i)
-      ,.v_i(lce_resp_v_lo)
-      ,.data_i(lce_resp_lo)
-      ,.ready_o(lce_resp_ready_li)
-      ,.v_o(fifo_lce_resp_v_lo)
-      ,.data_o(fifo_lce_resp_lo)
-      ,.yumi_i(fifo_lce_resp_yumi_li)
-      );
-
     // FSM CCE
-    bp_cce_fsm
+    bp_cce_fsm_top
       #(.bp_params_p(bp_params_p))
       cce_fsm
       (.clk_i(clk_i)
@@ -320,13 +291,13 @@ module wrapper
       ,.cfg_bus_i(cfg_bus_i)
       ,.cfg_cce_ucode_data_o()
 
-      ,.lce_req_i(fifo_lce_req_lo)
-      ,.lce_req_v_i(fifo_lce_req_v_lo)
-      ,.lce_req_yumi_o(fifo_lce_req_yumi_li)
+      ,.lce_req_i(lce_req_lo)
+      ,.lce_req_v_i(lce_req_v_lo)
+      ,.lce_req_ready_o(lce_req_ready_li)
 
-      ,.lce_resp_i(fifo_lce_resp_lo)
-      ,.lce_resp_v_i(fifo_lce_resp_v_lo)
-      ,.lce_resp_yumi_o(fifo_lce_resp_yumi_li)
+      ,.lce_resp_i(lce_resp_lo)
+      ,.lce_resp_v_i(lce_resp_v_lo)
+      ,.lce_resp_ready_o(lce_resp_ready_li)
 
       ,.lce_cmd_o(lce_cmd_lo)
       ,.lce_cmd_v_o(lce_cmd_v_lo)
@@ -334,14 +305,20 @@ module wrapper
 
       ,.mem_resp_i(mem_resp_i)
       ,.mem_resp_v_i(mem_resp_v_i)
-      ,.mem_resp_yumi_o(mem_resp_yumi_o)
+      ,.mem_resp_ready_o(mem_resp_ready_lo)
 
       ,.mem_cmd_o(mem_cmd_o)
       ,.mem_cmd_v_o(mem_cmd_v_o)
-      ,.mem_cmd_ready_i(mem_cmd_ready_i)
+      ,.mem_cmd_yumi_i(mem_cmd_ready_i & mem_cmd_v_o)
       );
+
+      assign mem_resp_yumi_o = mem_resp_ready_lo & mem_resp_v_i;
   end
-  else begin
+  else begin: UCE
+    logic mem_resp_ready_lo;
+    logic fifo_mem_resp_v_lo, fifo_mem_resp_yumi_li;
+    logic [cce_mem_msg_width_lp-1:0] fifo_mem_resp_lo;
+
     bp_uce
       #(.bp_params_p(bp_params_p)
        ,.assoc_p(dcache_assoc_p)
@@ -383,9 +360,28 @@ module wrapper
       ,.mem_cmd_v_o(mem_cmd_v_o)
       ,.mem_cmd_ready_i(mem_cmd_ready_i)
 
-      ,.mem_resp_i(mem_resp_i)
-      ,.mem_resp_v_i(mem_resp_v_i)
-      ,.mem_resp_yumi_o(mem_resp_yumi_o)
+      ,.mem_resp_i(fifo_mem_resp_lo)
+      ,.mem_resp_v_i(fifo_mem_resp_v_lo)
+      ,.mem_resp_yumi_o(fifo_mem_resp_yumi_li)
       );
+
+    bsg_fifo_1r1w_small
+      #(.width_p(cce_mem_msg_width_lp)
+       ,.els_p(1)
+       )
+      mem_resp_fifo
+      (.clk_i(clk_i)
+      ,.reset_i(reset_i)
+      
+      ,.v_i(mem_resp_v_i)
+      ,.data_i(mem_resp_i)
+      ,.ready_o(mem_resp_ready_lo)
+
+      ,.v_o(fifo_mem_resp_v_lo)
+      ,.data_o(fifo_mem_resp_lo)
+      ,.yumi_i(fifo_mem_resp_yumi_li)
+      );
+
+    assign mem_resp_yumi_o = mem_resp_ready_lo & mem_resp_v_i;
   end
 endmodule  
