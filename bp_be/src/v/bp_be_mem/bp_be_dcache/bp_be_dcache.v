@@ -1047,7 +1047,7 @@ module bp_be_dcache
     if (v_tv_r) begin
       lru_decode_way_li = store_op_tv_r ? store_hit_way : load_hit_way;
       dirty_mask_way_li = store_hit_way;
-      dirty_mask_v_li = store_op_tv_r;
+      dirty_mask_v_li = store_op_tv_r & (writethrough_p == 0);
       
       stat_mem_data_li.lru = lru_decode_data_lo;
       stat_mem_data_li.dirty = {dcache_assoc_p{1'b1}};
@@ -1056,7 +1056,7 @@ module bp_be_dcache
     else begin
       lru_decode_way_li = stat_mem_pkt.way_id;
       dirty_mask_way_li = stat_mem_pkt.way_id;
-      dirty_mask_v_li = 1'b1;
+      dirty_mask_v_li = 1'b1 & (writethrough_p == 0);
       case (stat_mem_pkt.opcode)
         e_cache_stat_mem_set_clear: begin
           stat_mem_data_li = {(stat_info_width_lp){1'b0}};
