@@ -343,4 +343,7 @@ module testbench
      ,.mem_resp_yumi_i(mem_resp_yumi_lo)
      );
 
+  if(uce_p == 0 && writethrough_p == 1)
+    $error("Writethrough cache with CCE not yet supported.");
+
 endmodule
